@@ -1,30 +1,25 @@
-from http.client import LENGTH_REQUIRED
-import locale
-from pydoc import locate
-from datetime import datetime, date as dt
-import calendar as cal
+import datetime
+from datetime import date
+import calendar
+from test import month_first_day, month_last_day, today_decimal, last_day
 
-# loop = [2,56,54,78,99,65,982]
+date_today = datetime.datetime.now()
+current_date = date.today
 
-# max = loop[0]
+def today_decimal():
+    return int(date_today.strftime("%d"))
 
-# for x in loop:
-#     if x > max:
-#         max = x
-# print(max)
+# print(type(today_decimal()))
 
+next_date = datetime.datetime.today() + datetime.timedelta(days =1)
+next_date_formatted = next_date.strftime("%A %d, %B %Y")
 
-locale.setlocale(locale.LC_ALL, 'de_DE')
+# def km_month():
+#     for x in range(1,today_decimal() +1):
+#         month_first_day = 
+#         daily_km = int(input("How much did you ride on {}: ".format(month_first_day())))
+#         daily_km = next_date = datetime.datetime.today() - datetime.timedelta(days = 1)
+#         print(daily_km)
 
-date_today = datetime.now()
-current_date = dt.today()
-
-current_month = cal.monthcalendar(year = current_date.year, month = current_date.month)
-
-largest_number = current_month[0][0]
-for entry in current_month:
-    for x in entry:
-        if x >  largest_number:
-            largest_number = x
-
-print(largest_number)
+# month_first_day =  next_date = datetime.datetime.today() - datetime.timedelta(days = 1)
+print(next_date_formatted)
