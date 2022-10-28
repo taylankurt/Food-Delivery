@@ -1,25 +1,10 @@
-import datetime
-from datetime import date
-import calendar
-from test import month_first_day, month_last_day, today_decimal, last_day
+from datetime import date, timedelta
 
-date_today = datetime.datetime.now()
-current_date = date.today
+def daterange(start_date, end_date):
+    for n in range(int((end_date - start_date).days)):
+        yield start_date + timedelta(n)
 
-def today_decimal():
-    return int(date_today.strftime("%d"))
-
-# print(type(today_decimal()))
-
-next_date = datetime.datetime.today() + datetime.timedelta(days =1)
-next_date_formatted = next_date.strftime("%A %d, %B %Y")
-
-# def km_month():
-#     for x in range(1,today_decimal() +1):
-#         month_first_day = 
-#         daily_km = int(input("How much did you ride on {}: ".format(month_first_day())))
-#         daily_km = next_date = datetime.datetime.today() - datetime.timedelta(days = 1)
-#         print(daily_km)
-
-# month_first_day =  next_date = datetime.datetime.today() - datetime.timedelta(days = 1)
-print(next_date_formatted)
+start_date = date(2022, 10, 1)
+end_date = date(2022, 10, 31)
+for single_date in daterange(start_date, end_date):
+    print(single_date.strftime("%A %d, %B %Y"))
