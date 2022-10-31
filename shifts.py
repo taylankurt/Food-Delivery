@@ -32,14 +32,17 @@ def month_day(day):
 def km_month():
     total_km = 0
     total_orders = 0
-    try:
-        for x in range (month_first_day().day, today_decimal() + 1):
-            daily_km = int(input("How much have you driven at {}: ".format(month_day(x).strftime("%A %d %B %Y "))))
+    for x in range (month_first_day().day, today_decimal() + 1):
+            try:
+                daily_km = int(input("How much have you driven at {}: ".format(month_day(x).strftime("%A %d %B %Y "))))
+            except ValueError:
+                print("You can only enter a number")
             total_km = daily_km + total_km
-            daily_orders = int(input(" .. and how many orders did you delivered on {}: ".format(month_day(x).strftime("%A %d %B %Y "))))
+            try:
+                daily_orders = int(input(" .. and how many orders did you delivered on {}: ".format(month_day(x).strftime("%A %d %B %Y "))))
+            except ValueError:
+                print("You can only a number")
             total_orders = daily_km + total_orders
-    except ValueError:
-        print("Please enter a number")
     return ("You have driven in {} {}km and have delivered {} orders ".format(current_date.strftime("%B"), total_km, total_orders)) 
 
 
