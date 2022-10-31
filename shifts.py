@@ -2,25 +2,45 @@ import locale
 from datetime import datetime as dt, date
 import calendar as cal
 
-locale.setlocale(locale.LC_ALL, 'de_DE')
+#locale.setlocale(locale.LC_ALL, 'de_DE')
 date_today = dt.now()
 current_date = date.today()
-current_month = cal.monthcalendar(year = current_date.year, month = current_date.month)
+current_month_array = cal.monthcalendar(year = current_date.year, month = current_date.month)
 
 def last_day():
-    largest_number = current_month[0][0]
-    for entry in current_month:
+    largest_number = current_month_array[0][0]
+    for entry in current_month_array:
         for x in entry:
             if x >  largest_number:
                 largest_number = x
     return largest_number
 
+def today_decimal():
+    return int(date_today.strftime("%d"))
+
 def month_first_day ():
-    date = date_today.replace(day=1).strftime("%A %d, %B %Y")
+    date = date_today.replace(day=1)
     return date
 
 def month_last_day ():    
-    date = date_today.replace(day=last_day()).strftime("%A %d, %B %Y")
-    return date
+    day_last = date_today.replace(day=last_day())
+    return day_last
 
-print(month_last_day())
+def month_day(day):
+    return date_today.replace(day = day)
+
+def km_month():
+    total_km = 0
+    total_orders = 0
+    try:
+        for x in range (month_first_day().day, today_decimal() + 1):
+            daily_km = int(input("How much have you driven at {}: ".format(month_day(x).strftime("%A %d %B %Y "))))
+            total_km = daily_km + total_km
+            daily_orders = int(input(" .. and how many orders did you delivered on {}: ".format(month_day(x).strftime("%A %d %B %Y "))))
+            total_orders = daily_km + total_orders
+    except ValueError:
+        print("Please enter a number")
+    return ("You have driven in {} {}km and have delivered {} orders ".format(current_date.strftime("%B"), total_km, total_orders)) 
+
+
+print(km_month())

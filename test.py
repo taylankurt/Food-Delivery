@@ -8,11 +8,6 @@ date_today = datetime.now()
 current_date = date.today()
 current_month = calendar.monthcalendar(year = current_date.year, month = current_date.month)
 
-def next_day():
-    next_date = datetime.today() + dt.timedelta(days = 1)
-    next_date_formatted = next_date.strftime("%A %d, %B %Y")
-    return next_date_formatted
-
 def last_day():
     largest_number = current_month[0][0]
     for entry in current_month:
