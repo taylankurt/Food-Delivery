@@ -2,7 +2,7 @@ import locale
 from datetime import datetime as dt, date
 import calendar as cal
 
-#locale.setlocale(locale.LC_ALL, 'de_DE')
+#`locale.setlocale(locale.LC_ALL, 'de_DE')
 date_today = dt.now()
 current_date = date.today()
 current_month_array = cal.monthcalendar(year = current_date.year, month = current_date.month)
@@ -29,24 +29,7 @@ def month_last_day ():
 def month_day(day):
     return date_today.replace(day = day)
 
-def km_month():
-    total_km = 0
-    total_orders = 0
-    for x in range (month_first_day().day, today_decimal() + 1):
-            try:
-                daily_km = int(input("How much have you driven at {}: ".format(month_day(x).strftime("%A %d, %B %Y "))))
-            except ValueError:
-                print("You can only enter a number")
-            total_km = daily_km + total_km
-            try:
-                daily_orders = int(input(" .. and how many orders did you delivered on {}: ".format(month_day(x).strftime("%A %d, %B %Y "))))
-            except ValueError:
-                print("You can only a number")
-            total_orders = daily_km + total_orders
-    return ("You have driven in {} {} km and have delivered {} orders ".format(current_date.strftime("%B"), total_km, total_orders)) 
-
-
-def shifts_current_month():
+def km_order_data():
     days = []
     total_km = 0
     total_orders = 0
@@ -61,4 +44,4 @@ def shifts_current_month():
         total_orders = daily_orders + total_orders
     return ("You have driven until {} {}km and had delivered {} orders".format(date_today.strftime("%A %d, %B %Y"), (total_km),(total_orders)))
 
-print(shifts_current_month())
+print(km_order_data())
