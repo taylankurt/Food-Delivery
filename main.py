@@ -40,6 +40,6 @@ def current_distance_delivery():
         daily_delivery = float(input("How many delivers did you had on {}: ".format(y)))
         total_distance = daily_distance + total_distance
         total_deliveries = daily_delivery + total_deliveries
-    return ("You have driven until {} {}km and had delivered {} orders".format(date_today.strftime("%A %d, %B %Y"), total_distance,total_deliveries))
+    return ("You have driven until {} {}km and had delivered {} orders".format(date_today.strftime("%A %d, %B %Y"), total_distance,int(total_deliveries)))
 
 print(current_distance_delivery())
