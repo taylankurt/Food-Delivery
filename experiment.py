@@ -5,7 +5,7 @@ date_today = dt.now()
 current_date = date.today()
 current_month_array = cal.monthcalendar(
     year=current_date.year, month=current_date.month)
-shift_days = ["Monday", "Tuesday", "Wednesday", "Friday", "Saturday"]
+shift_name = ["Monday", "Tuesday", "Wednesday", "Friday", "Saturday"]
 shifts = []
 
 
@@ -36,18 +36,19 @@ def month_day(day):
     return date_today.replace(day=day)
 
 
-def shifts_month():
+def shift_name_month():
     for x in range(month_first_day().day, today_decimal() + 1):
-        x = month_day(x).strftime("%A %d, %B %Y")
-        if "Monday" in x or "Tuesday" in x or "Wednesday" in x or "Friday" in x or "Saturday" in x:
-            shifts.append(x)
+        dayname = month_day(x).strftime("%A")
+        day = month_day(x).strftime("%A %d, %B %Y")
+        if dayname in shift_name:
+            shifts.append(day)
     return shifts
 
 
 def current_distance_delivery():
     total_distance = 0
     total_deliveries = 0
-    for x in shifts_month():
+    for x in shift_name_month():
         daily_distance = float(
             input("How much did you ride on {}: ".format(x)))
         daily_delivery = float(
