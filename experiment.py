@@ -3,47 +3,58 @@ import calendar as cal
 
 date_today = dt.now()
 current_date = date.today()
-current_month_array = cal.monthcalendar(year = current_date.year, month = current_date.month)
+current_month_array = cal.monthcalendar(
+    year=current_date.year, month=current_date.month)
+shift_days = ["Monday", "Tuesday", "Wednesday", "Friday", "Saturday"]
+shifts = []
 
-def last_day(): # to determine the last day of the month
+
+def last_day():  # to determine the last day of the month
     largest_number = current_month_array[0][0]
     for entry in current_month_array:
         for x in entry:
-            if x >  largest_number:
+            if x > largest_number:
                 largest_number = x
     return largest_number
 
-def today_decimal(): # for range 
+
+def today_decimal():  # for range
     return int(date_today.strftime("%d"))
 
-def month_first_day ():
+
+def month_first_day():
     date = date_today.replace(day=1)
     return date
 
-def month_last_day ():    
+
+def month_last_day():
     day_last = date_today.replace(day=last_day())
     return day_last
 
-def month_day(day):
-    return date_today.replace(day = day)
 
-def current_distance_delivery():
-    shift_days = []
-    total_distance = 0
-    total_deliveries = 0
+def month_day(day):
+    return date_today.replace(day=day)
+
+
+def shifts_month():
     for x in range(month_first_day().day, today_decimal() + 1):
         x = month_day(x).strftime("%A %d, %B %Y")
         if "Monday" in x or "Tuesday" in x or "Wednesday" in x or "Friday" in x or "Saturday" in x:
-            shift_days.append(x)
-    for y in shift_days:
-        daily_distance = float(input("How much did you ride on {}: ".format(y)))
-        daily_delivery = float(input("How many delivers did you had on {}: ".format(y)))
+            shifts.append(x)
+    return shifts
+
+
+def current_distance_delivery():
+    total_distance = 0
+    total_deliveries = 0
+    for x in shifts_month():
+        daily_distance = float(
+            input("How much did you ride on {}: ".format(x)))
+        daily_delivery = float(
+            input("How many delivers did you had on {}: ".format(x)))
         total_distance = daily_distance + total_distance
         total_deliveries = daily_delivery + total_deliveries
-    f = open("distance_delivery_data.txt", "w")
-    f.write(str("Your have delivered in {} {} deliveries\n".format(date_today.strftime("%B"), int(total_deliveries))))
-    f.write(str("Your have driven in {} {}km\n".format(date_today.strftime("%B"), int(total_distance))))
-    f.close()
-    return ("You have driven until {} {}km and had delivered {} orders".format(date_today.strftime("%A %d, %B %Y"), total_distance,int(total_deliveries)))
+    return ("You have driven until {} {}km and had delivered {} orders".format(date_today.strftime("%A %d, %B %Y"), total_distance, int(total_deliveries)))
+
 
 print(current_distance_delivery())

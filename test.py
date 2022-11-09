@@ -1,52 +1,61 @@
-from cmath import exp
-import locale
-from datetime import datetime, date, timedelta
-import datetime as dt
-import calendar
-from experiment import shifts_current_month
+from datetime import datetime as dt, date
+import calendar as cal
 
-# locale.setlocale(locale.LC_ALL, 'de_DE')
-date_today = datetime.now()
+date_today = dt.now()
 current_date = date.today()
-current_month = calendar.monthcalendar(year = current_date.year, month = current_date.month)
+current_month_array = cal.monthcalendar(
+    year=current_date.year, month=current_date.month)
 
-def last_day():
-    largest_number = current_month[0][0]
-    for entry in current_month:
+
+def last_day():  # to determine the last day of the month
+    largest_number = current_month_array[0][0]
+    for entry in current_month_array:
         for x in entry:
-            if x >  largest_number:
+            if x > largest_number:
                 largest_number = x
     return largest_number
 
-def today_decimal():
+
+def today_decimal():  # for range
     return int(date_today.strftime("%d"))
 
+
 def month_first_day():
-    first_day = date_today.replace(day=1)
-    return first_day
+    date = date_today.replace(day=1)
+    return date
+
 
 def month_last_day():
     day_last = date_today.replace(day=last_day())
     return day_last
 
+
 def month_day(day):
     return date_today.replace(day=day)
 
-def km_month():
-    total_km = 0
-    total_orders = 0
-    for x in range (month_first_day().day, today_decimal() + 1):
-            try:
-                daily_km = int(input("How much have you driven at {}: ".format(month_day(x).strftime("%A %d, %B %Y "))))
-            except ValueError:
-                print("You can only enter a number")
-            total_km = daily_km + total_km
-            try:
-                daily_orders = int(input(" .. and how many orders did you delivered on {}: ".format(month_day(x).strftime("%A %d, %B %Y "))))
-            except ValueError:
-                print("You can only a number")
-            total_orders = daily_km + total_orders
-    return ("You have driven in {} {} km and have delivered {} orders ".format(current_date.strftime("%B"), total_km, total_orders)) 
+
+def current_distance_delivery():
+    shift_days = []
+    total_distance = 0
+    total_deliveries = 0
+    for x in range(month_first_day().day, today_decimal() + 1):
+        x = month_day(x).strftime("%A %d, %B %Y")
+        if "Monday" in x or "Tuesday" in x or "Wednesday" in x or "Friday" in x or "Saturday" in x:
+            shift_days.append(x)
+    for y in shift_days:
+        daily_distance = float(
+            input("How much did you ride on {}: ".format(y)))
+        daily_delivery = float(
+            input("How many delivers did you had on {}: ".format(y)))
+        total_distance = daily_distance + total_distance
+        total_deliveries = daily_delivery + total_deliveries
+    f = open("distance_delivery_data.txt", "w")
+    f.write(str("Your have delivered in {} {} deliveries\n".format(
+        date_today.strftime("%B"), int(total_deliveries))))
+    f.write(str("Your have driven in {} {}km\n".format(
+        date_today.strftime("%B"), int(total_distance))))
+    f.close()
+    return ("You have driven until {} {}km and had delivered {} orders".format(date_today.strftime("%A %d, %B %Y"), total_distance, int(total_deliveries)))
 
 
-print(date_today)
+print(current_distance_delivery())
