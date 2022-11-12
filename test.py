@@ -1,5 +1,6 @@
 from datetime import datetime as dt, date
 import calendar as cal
+import os
 
 date_today = dt.now()
 current_date = date.today()
@@ -44,6 +45,7 @@ def shifts_month():
 
 
 def current_distance_delivery():
+    os.system("cls")
     total_distance = 0
     total_deliveries = 0
     for x in shifts_month():
