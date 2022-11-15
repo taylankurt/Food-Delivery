@@ -9,8 +9,8 @@ current_month_array = cal.monthcalendar(
 shifts = []
 
 
-def last_day():  # to determine the last day of the month
-    largest_number = current_month_array[0][0]
+def month_last_day():  # to determine the last day of the month
+    largest_number = 0
     for entry in current_month_array:
         for x in entry:
             if x > largest_number:
@@ -28,7 +28,7 @@ def month_first_day():
 
 
 def month_last_day():
-    day_last = date_today.replace(day=last_day())
+    day_last = date_today.replace(day=month_last_day())
     return day_last
 
 
@@ -58,4 +58,5 @@ def current_distance_delivery():
     return ("You have driven until {} {}km and had delivered {} orders".format(date_today.strftime("%A %d, %B %Y"), total_distance, int(total_deliveries)))
 
 
-print(current_distance_delivery())
+print("test")
+print(shifts_month())
