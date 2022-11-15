@@ -18,7 +18,7 @@ def month_last_day():  # to determine the last day of the month
     return largest_number
 
 
-def today_decimal():  # for range
+def today_decimal():
     return int(date_today.strftime("%d"))
 
 
