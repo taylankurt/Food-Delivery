@@ -2,16 +2,34 @@ from datetime import datetime as dt, date
 import calendar as cal
 import os
 
+date_today = dt.now()
+current_date = date.today()
+current_month_array = cal.monthcalendar(
+    year=current_date.year, month=current_date.month)
+shifts = []
+
 
 class Month:
     def __init__(self, month_number):
-        self.month = month_number
+        self.month = month_number = int(input(
+            "Please enter the month in number(1-12): "))
+
+    def today_decimal(self):
+        return int(date_today.strftime("%d"))
 
     def first_day_decimal(self):
-        month = self.month_number
+        month = self.month
         date_today = dt.now()
         date = date_today.replace(month=month, day=1)
         return date.day
+
+    def first_day(self, day):
+        self.day = day
+        month = self.month
+        date_today = dt.now()
+        date = date_today.replace(
+            month=month, day=day).strftime("%A %d, %B %Y")
+        return date
 
     def last_day_decimal(self):  # to determine the last day of the month
         month = self.month
@@ -25,31 +43,32 @@ class Month:
                     largest_number = x
         return largest_number
 
+    def shifts_month(self):
+        for x in range(month.first_day_decimal(), month.today_decimal() + 1):
+            x = month.first_day(x)
+            if "Monday" in x or "Tuesday" in x or "Wednesday" in x or "Friday" in x or "Saturday" in x:
+                shifts.append(x)
+        return shifts
 
-class January(Month):
-    def __init__(self, month_number=1):
-        super().__init__(month_number=1)
-
-
-date_today = dt.now()
-current_date = date.today()
-current_month_array = cal.monthcalendar(
-    year=current_date.year, month=current_date.month)
-shifts = []
-
-
-def today_decimal():
-    return int(date_today.strftime("%d"))
-
-
-def month_day(day):
-    return date_today.replace(day=day)
+    def current_distance_delivery(self):
+        os.system("cls")
+        total_distance = 0
+        total_deliveries = 0
+        for x in shifts_month():
+            daily_distance = float(
+                input("How much did you ride on {}: ".format(x)))
+            daily_delivery = float(
+                input("How many delivers did you had on {}: ".format(x)))
+            total_distance = daily_distance + total_distance
+            total_deliveries = daily_delivery + total_deliveries
+        return ("You have driven until {} {}km and had delivered {} orders".format(date_today.strftime("%A %d, %B %Y"), total_distance, int(total_deliveries)))
 
 
 def shifts_month():
-    month = January
-    for x in range(month.first_day(), today_decimal() + 1):
-        x = month_day(x).strftime("%A %d, %B %Y")
+    selected_month = int(input("Please enter the month in number(1-12): "))
+    month = Month(selected_month)
+    for x in range(month.first_day_decimal(), month.today_decimal() + 1):
+        x = month.first_day(x)
         if "Monday" in x or "Tuesday" in x or "Wednesday" in x or "Friday" in x or "Saturday" in x:
             shifts.append(x)
     return shifts
@@ -69,5 +88,5 @@ def current_distance_delivery():
     return ("You have driven until {} {}km and had delivered {} orders".format(date_today.strftime("%A %d, %B %Y"), total_distance, int(total_deliveries)))
 
 
-September = Month(9)
-print(month.last_day_decimal())
+month = Month(9)
+print(month.shifts_month())
