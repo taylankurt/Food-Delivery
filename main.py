@@ -9,7 +9,7 @@ current_month_array = cal.monthcalendar(
 shifts = []
 
 
-def month_last_day():  # to determine the last day of the month
+def end_month():  # to determine the last day of the month
     largest_number = 0
     for entry in current_month_array:
         for x in entry:
@@ -23,12 +23,12 @@ def today_decimal():
 
 
 def month_first_day():
-    date = date_today.replace(day=1)
-    return date
+    date_x = date_today.replace(day=1)
+    return date_x
 
 
 def month_last_day():
-    day_last = date_today.replace(day=month_last_day())
+    day_last = date_today.replace(day=end_month())
     return day_last
 
 
