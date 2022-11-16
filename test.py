@@ -47,6 +47,7 @@ class Month:
     #     return shifts
 
     def current_distance_delivery(self):
+        month = self.month
         date_today = dt.now()
         os.system("cls")
         total_distance = 0
@@ -58,7 +59,7 @@ class Month:
                 input("How many delivers did you had on {}: ".format(x)))
             total_distance = daily_distance + total_distance
             total_deliveries = daily_delivery + total_deliveries
-        return ("You have driven until {} {}km and had delivered {} orders".format(date_today.strftime("%A %d, %B %Y"), total_distance, int(total_deliveries)))
+        return ("You have driven until {} {}km and had delivered {} orders".format(date_today.replace(month=month).strftime("%A %d, %B %Y"), total_distance, int(total_deliveries)))
 
 
 def shifts_month():
