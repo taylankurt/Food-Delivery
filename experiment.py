@@ -42,9 +42,9 @@ class Month:
 
     def shifts_month(self):
         for decimal_day in range(self.first_day_decimal(), self.today_decimal() + 1):
-            dayname = self.first_day(decimal_day)
-            if "Monday" in dayname or "Tuesday" in dayname or "Wednesday" in dayname or "Friday" in dayname or "Saturday" in dayname:
-                shifts.append(dayname)
+            fullday = self.first_day(decimal_day)
+            if "Monday" in fullday or "Tuesday" in fullday or "Wednesday" in fullday or "Friday" in fullday or "Saturday" in fullday:
+                shifts.append(fullday)
         return shifts
 
     def current_distance_delivery(self):
