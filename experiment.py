@@ -41,19 +41,18 @@ class Month:
         return largest_number
 
     def shifts_month(self):
-        month = Month()
-        for x in range(month.first_day_decimal(), month.today_decimal() + 1):
-            x = month.first_day(x)
-            if "Monday" in x or "Tuesday" in x or "Wednesday" in x or "Friday" in x or "Saturday" in x:
-                shifts.append(x)
+        for x in range(self.first_day_decimal(), self.today_decimal() + 1):
+            dayname = self.first_day(x)
+            if "Monday" in dayname or "Tuesday" in dayname or "Wednesday" in dayname or "Friday" in dayname or "Saturday" in dayname:
+                shifts.append(dayname)
         return shifts
 
     def current_distance_delivery(self):
         date_today = dt.now()
-        os.system("cls")
+        os.system("clear")
         total_distance = 0
         total_deliveries = 0
-        for x in shifts_month():
+        for x in self.shifts_month():
             daily_distance = float(
                 input("How much did you ride on {}: ".format(x)))
             daily_delivery = float(
@@ -62,14 +61,6 @@ class Month:
             total_deliveries = daily_delivery + total_deliveries
         return ("You have driven until {} {}km and had delivered {} orders".format(date_today.strftime("%A %d, %B %Y"), total_distance, int(total_deliveries)))
 
-
-def shifts_month():
-    month = Month()
-    for x in range(month.first_day_decimal(), month.today_decimal() + 1):
-        x = month.first_day(x)
-        if "Monday" in x or "Tuesday" in x or "Wednesday" in x or "Friday" in x or "Saturday" in x:
-            shifts.append(x)
-    return shifts
 
 # def shifts_month():
 #     selected_month = int(input("Please enter the month in number(1-12): "))
@@ -94,6 +85,5 @@ def shifts_month():
 #         total_deliveries = daily_delivery + total_deliveries
 #     return ("You have driven until {} {}km and had delivered {} orders".format(date_today.strftime("%A %d, %B %Y"), total_distance, int(total_deliveries)))
 
-
 mjam = Month()
-print(mjam.shifts_month())
+print(mjam.current_distance_delivery())
