@@ -1,4 +1,0 @@
-1-) Calculate the total distance and deliveries in current month or in choosen month
-2-) Write it to a file
-3-) Automate to e-mail the data to a given e-mail address at a given time
-
