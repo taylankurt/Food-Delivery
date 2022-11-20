@@ -83,4 +83,4 @@ class Month:
 
 
 mjam = Month()
-print(mjam.write_data())
+print(mjam.current_distance_delivery())
