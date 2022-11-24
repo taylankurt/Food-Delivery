@@ -1,6 +1,6 @@
 from datetime import datetime as dt, date
 import calendar as cal
-import re
+from itertools import islice
 import os
 
 
@@ -20,9 +20,9 @@ class Month:
 
     def first_day(self, day):
         self.day = day
-        date_x = self.date_today.replace(
+        first_day = self.date_today.replace(
             month=self.month_number, day=day).strftime("""%A %d, %B %Y""")
-        return date_x
+        return first_day
 
     def last_day_decimal(self):  # to determine the last day of the month
         current_month_array = cal.monthcalendar(
@@ -76,16 +76,45 @@ class Month:
                         "How much did you ride on {}: ".format(x)))
                     daily_delivery = float(input(
                         "How many delivers did you had on {}: ".format(x)))
-                    with open("data.txt", "a+") as data_file:
+                    with open(filename, "a+") as data_file:
                         data_file.write(
-                            str("""{};{};{}""".format(x, int(daily_distance), int(daily_delivery))) + "\n")
+                            str("""{};{};{}""".format(x, round(daily_distance, 2), int(daily_delivery))) + "\n")
+
+    def data(self):
+        os.system("clear")
+        total_distance = 0
+        filename = "data.csv"
+        date_data = []
+        kilometer_data = []
+        delivery_data = []
+        total_distance = 0
+        total_deliveries = 0
+        current_month = self.current_date.replace(
+            month=self.month_number).strftime("%B %Y")
+
+        with open(filename) as data_file:
+            for lines in islice(data_file, 1, None):
+                date_data.append(lines[0:10])
+                kilometer_data.append(lines[11:15])
+                delivery_data.append(lines[17:19])
+            data_file.close()
+
+        for day in kilometer_data:
+            total_distance = total_distance + float(day)
+        for day in delivery_data:
+            total_deliveries = total_deliveries + float(day)
+        av_deliveries_day = total_deliveries / len(delivery_data)
+        av_deliveries_hour = av_deliveries_day / 5
+        av_distance = total_distance / len(kilometer_data)
+        # print(delivery_data)
+
+        return """Your data for {}:\nTotal Distance: {}km\nDistance Average: {}km\nTotal Deliveries: {}
+Delivery Average(Day): {}\nDelivery Average(Hour): {}
+""".format(current_month, round(total_distance, 1), round(av_distance, 2), int(total_deliveries), round(av_deliveries_day, 2), round(av_deliveries_hour, 2))
 
 
-# total_distance = 0
-# total_deliveries = 0
 # total_distance = daily_distance + total_distance
 # total_deliveries = daily_delivery + total_deliveries
-# av_deliveries = total_deliveries / len(self.shifts_month_decimal())
-# av_distance = total_distance / len(self.shifts_month_decimal())
+
 mjam = Month()
-print(mjam.current_distance_delivery())
+print(mjam.data())
