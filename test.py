@@ -1,5 +1,6 @@
 from datetime import datetime as dt, date
 import calendar as cal
+import re
 import os
 
 
@@ -7,30 +8,25 @@ class Month:
     def __init__(self):
         self.month_number = int(input(
             "Please enter the month in number(1-12): "))
+        self.date_today = dt.now()
+        self.current_date = date.today()
 
     def today_decimal(self):
-        date_today = dt.now()
-        return int(date_today.strftime("%d"))
+        return int(self.date_today.strftime("%d"))
 
     def first_day_decimal(self):
-        month = self.month_number
-        date_today = dt.now()
-        date_x = date_today.replace(month=month, day=1)
-        return date_x.day
+        first_day = self.date_today.replace(month=self.month_number, day=1)
+        return first_day.day
 
     def first_day(self, day):
         self.day = day
-        month = self.month_number
-        date_today = dt.now()
-        date_x = date_today.replace(
-            month=month, day=day).strftime("""%A %d, %B %Y""")
+        date_x = self.date_today.replace(
+            month=self.month_number, day=day).strftime("""%A %d, %B %Y""")
         return date_x
 
     def last_day_decimal(self):  # to determine the last day of the month
-        month = self.month_number
-        current_date = date.today()
         current_month_array = cal.monthcalendar(
-            year=current_date.year, month=month)
+            year=self.current_date.year, month=self.month_number)
         largest_number = 0
         for entry in current_month_array:
             for x in entry:
@@ -40,47 +36,56 @@ class Month:
 
     def shifts_month(self):
         shifts = []
-        shifts_decimal = []
         for decimal_day in range(self.first_day_decimal(), self.today_decimal() + 1):
             fullday = self.first_day(decimal_day)
             if "Monday" in fullday or "Tuesday" in fullday or "Wednesday" in fullday or "Friday" in fullday or "Saturday" in fullday:
                 shifts.append(fullday)
-                shifts_decimal.append(decimal_day)
         return shifts
 
-    def shifts_month_count(self):
-        shifts = []
+    def shifts_month_decimal(self):
         shifts_decimal = []
         for decimal_day in range(self.first_day_decimal(), self.today_decimal() + 1):
             fullday = self.first_day(decimal_day)
             if "Monday" in fullday or "Tuesday" in fullday or "Wednesday" in fullday or "Friday" in fullday or "Saturday" in fullday:
-                shifts.append(fullday)
-                shifts_decimal.append(decimal_day)
+                selected_shift = self.date_today.replace(
+                    month=self.month_number, day=decimal_day).strftime("%d %m %Y")
+                shifts_decimal.append(selected_shift)
         return shifts_decimal
 
     def current_distance_delivery(self):
-        date_today = dt.now()
         os.system("clear")
-        total_distance = 0
-        total_deliveries = 0
+        filename = "data.txt"
 
-        for x in self.shifts_month():
-            daily_distance = float(
-                input("How much did you ride on {}: ".format(x)))
-            daily_delivery = float(
-                input("How many delivers did you had on {}: ".format(x)))
-            total_distance = daily_distance + total_distance
-            total_deliveries = daily_delivery + total_deliveries
-        av_deliveries = total_deliveries / len(self.shifts_month_count())
-        av_distance = total_distance / len(self.shifts_month_count())
-        return ("Your data for {} is:\nDriven distance: {}km\nAverage distance: {}km\nDelivered orders:  {}\nAverage orders: {}".format
-                (date_today.strftime("%B %Y"), total_distance, av_distance, int(total_deliveries), av_deliveries))
+        if not os.path.isfile(filename):
+            with open(filename, "w") as data_file:
+                data_file.write("Date;Kilometer;Deliveries" + "\n")
 
-    def write_data(self):
-        f = open("data.txt", "w")
-        f.write(self.current_distance_delivery())
-        f.close()
+        with open(filename, "r+") as data_file:
+            lines = data_file.readlines()
+            entry_found = False
+
+            for x in self.shifts_month_decimal():
+                entry_found = False
+                for sentence in lines:
+                    if x in sentence:
+                        print("The distance data for {} is already written".format(x))
+                        entry_found = True
+
+                if entry_found == False:
+                    daily_distance = float(input(
+                        "How much did you ride on {}: ".format(x)))
+                    daily_delivery = float(input(
+                        "How many delivers did you had on {}: ".format(x)))
+                    with open("data.txt", "a+") as data_file:
+                        data_file.write(
+                            str("""{};{};{}""".format(x, int(daily_distance), int(daily_delivery))) + "\n")
 
 
+# total_distance = 0
+# total_deliveries = 0
+# total_distance = daily_distance + total_distance
+# total_deliveries = daily_delivery + total_deliveries
+# av_deliveries = total_deliveries / len(self.shifts_month_decimal())
+# av_distance = total_distance / len(self.shifts_month_decimal())
 mjam = Month()
 print(mjam.current_distance_delivery())
