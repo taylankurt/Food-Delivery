@@ -54,7 +54,7 @@ class Month:
 
     def current_distance_delivery(self):
         os.system("clear")
-        filename = "data.txt"
+        filename = "data.csv"
 
         if not os.path.isfile(filename):
             with open(filename, "w") as data_file:
