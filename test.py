@@ -2,6 +2,7 @@ from datetime import datetime as dt, date
 import calendar as cal
 from itertools import islice
 import os
+import matplotlib.pyplot as plt
 
 
 class Month:
@@ -34,13 +35,29 @@ class Month:
                     largest_number = x
         return largest_number
 
-    def shifts_month(self):
-        shifts = []
-        for decimal_day in range(self.first_day_decimal(), self.today_decimal() + 1):
-            fullday = self.first_day(decimal_day)
-            if "Monday" in fullday or "Tuesday" in fullday or "Wednesday" in fullday or "Friday" in fullday or "Saturday" in fullday:
-                shifts.append(fullday)
-        return shifts
+    def absence_month(self):
+        os.system("clear")
+        filename = "absence.csv"
+        absence_day = True
+
+        if not os.path.isfile(filename):
+            with open(filename, "w") as data_file:
+                data_file.write("Date" + "\n")
+
+        while absence_day:
+            line = input("Absence date: ").split(' ')
+            date = []
+            for x in line:
+                if x.isdigit():
+                    date.append(x)
+                else:
+                    absence_day = False
+                    break
+            if absence_day == True:
+                with open(filename, "a+") as absence_file:
+                    absence_file.write(str("{} {} {}\n").format(
+                        date[0], date[1], date[2]))
+        return date
 
     def shifts_month_decimal(self):
         shifts_decimal = []
@@ -80,9 +97,8 @@ class Month:
                         data_file.write(
                             str("""{};{};{}""".format(x, round(daily_distance, 2), int(daily_delivery))) + "\n")
 
-    def data(self):
+    def data_analysis(self):
         os.system("clear")
-        total_distance = 0
         filename = "data.csv"
         date_data = []
         kilometer_data = []
@@ -103,18 +119,63 @@ class Month:
             total_distance = total_distance + float(day)
         for day in delivery_data:
             total_deliveries = total_deliveries + float(day)
+
         av_deliveries_day = total_deliveries / len(delivery_data)
         av_deliveries_hour = av_deliveries_day / 5
         av_distance = total_distance / len(kilometer_data)
-        # print(delivery_data)
 
         return """Your data for {}:\nTotal Distance: {}km\nDistance Average: {}km\nTotal Deliveries: {}
 Delivery Average(Day): {}\nDelivery Average(Hour): {}
 """.format(current_month, round(total_distance, 1), round(av_distance, 2), int(total_deliveries), round(av_deliveries_day, 2), round(av_deliveries_hour, 2))
 
+    def data_graph(self):
+        date = []
+        kilometer = []
+        delivery = []
+        filename = "data.csv"
+        first_line = True
+        with open(filename, "r+") as data_file:
+            lines = data_file.readlines()
+            for line in lines:
+                if first_line == True:
+                    first_line = False
+                    continue
 
-# total_distance = daily_distance + total_distance
-# total_deliveries = daily_delivery + total_deliveries
+                splitArray = line.split(";")
+
+                date_line = str(splitArray[0][:2])
+                kilometer_line = float(splitArray[1])
+                delivery_line = float(splitArray[2].rstrip("\n"))
+                # if self.is_float_digit(kilometer_line, date_line, delivery_line):
+                kilometer.append(kilometer_line)
+                date.append(date_line)
+                delivery.append(delivery_line)
+                # else:
+                #    continue
+        x = date
+        y = delivery
+        print(date)
+        print("END")
+        print(delivery)
+
+        plt.bar(x, y,)
+        label = "Date for month: " + str(self.month_number)
+
+        plt.xlabel(label)
+        plt.ylabel("Delivery")
+        plt.title("Mjam Work Graph")
+
+        return plt.show()
+
+    def is_float_digit(self, x: str, y: str, z: str) -> bool:
+        try:
+            float(x)
+            float(y)
+            float(z)
+            return True
+        except ValueError:
+            return False
+
 
 mjam = Month()
-print(mjam.data())
+print(mjam.data_graph())
