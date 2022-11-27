@@ -113,13 +113,19 @@ class Month:
         totalDeliveries = 0
         currentMonth = self.currentDate.replace(
             month=self.monthNumber).strftime("%B %Y")
+        firstLine = True
 
         with open(filename) as dataFile:
-            for lines in islice(dataFile, 1, None):
-                dateData.append(lines[0:10])
-                kilometerData.append(lines[11:15])
-                deliveryData.append(lines[17:19])
-            dataFile.close()
+            lines = dataFile.readlines()
+            for line in lines:
+                if firstLine == True:
+                    firstLine = False
+                    continue
+                splitArray = line.split(";")
+                dateArray = splitArray[0].split("-")
+                dateData.append(dateArray[0:2])
+                kilometerData.append(splitArray[1])
+                deliveryData.append(splitArray[2])
 
         for day in kilometerData:
             totalDistance = totalDistance + float(day)
@@ -158,27 +164,14 @@ Delivery Average(Day): {}\nDelivery Average(Hour): {}""".format(currentMonth, ro
 
         x = date
         y = delivery
-        print(date)
-        print("END")
-        print(delivery)
-
-        plt.bar(x, y,)
+        plt.plot(x, y)
         label = "Date for month: " + str(self.monthNumber)
 
         plt.xlabel(label)
         plt.ylabel("Delivery")
-        plt.title("Mjam Work Graph")
+        plt.title("Work Graph")
 
         return plt.show()
-
-    def is_float_digit(self, x: str, y: str, z: str) -> bool:
-        try:
-            float(x)
-            float(y)
-            float(z)
-            return True
-        except ValueError:
-            return False
 
 
 mjam = Month()
