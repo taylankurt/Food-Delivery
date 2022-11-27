@@ -7,151 +7,155 @@ import matplotlib.pyplot as plt
 
 class Month:
     def __init__(self):
-        self.month_number = int(input(
+        self.monthNumber = int(input(
             "Please enter the month in number(1-12): "))
-        self.date_today = dt.now()
-        self.current_date = date.today()
+        self.dateToday = dt.now()
+        self.currentDate = date.today()
 
-    def today_decimal(self):
-        return int(self.date_today.strftime("%d"))
+    def todayDecimal(self):
+        return int(self.dateToday.strftime("%d"))
 
-    def first_day_decimal(self):
-        first_day = self.date_today.replace(month=self.month_number, day=1)
-        return first_day.day
+    def firstDayDecimal(self):
+        firstDay = self.dateToday.replace(month=self.monthNumber, day=1)
+        return firstDay.day
 
-    def first_day(self, day):
+    def firstDay(self, day):
         self.day = day
-        first_day = self.date_today.replace(
-            month=self.month_number, day=day).strftime("""%A %d, %B %Y""")
-        return first_day
+        firstDay = self.dateToday.replace(
+            month=self.monthNumber, day=day).strftime("""%A %d, %B %Y""")
+        return firstDay
 
-    def last_day_decimal(self):  # to determine the last day of the month
-        current_month_array = cal.monthcalendar(
-            year=self.current_date.year, month=self.month_number)
-        largest_number = 0
-        for entry in current_month_array:
+    def lastDayDecimal(self):  # to determine the last day of the month
+        currentMonthArray = cal.monthcalendar(
+            year=self.currentDate.year, month=self.monthNumber)
+        largestNumber = 0
+        for entry in currentMonthArray:
             for x in entry:
-                if x > largest_number:
-                    largest_number = x
-        return largest_number
+                if x > largestNumber:
+                    largestNumber = x
+        return largestNumber
 
-    def absence_month(self):
+    def absenceMonth(self):
         os.system("clear")
         filename = "absence.csv"
-        absence_day = True
+        absenceDay = True
 
         if not os.path.isfile(filename):
-            with open(filename, "w") as data_file:
-                data_file.write("Date" + "\n")
+            with open(filename, "w") as dataFile:
+                dataFile.write("Date" + "\n")
 
-        while absence_day:
+        while absenceDay:
             line = input("Absence date: ").split(' ')
             date = []
             for x in line:
                 if x.isdigit():
                     date.append(x)
                 else:
-                    absence_day = False
+                    absenceDay = False
                     break
-            if absence_day == True:
-                with open(filename, "a+") as absence_file:
-                    absence_file.write(str("{} {} {}\n").format(
+            if absenceDay == True:
+                with open(filename, "a+") as absenceFile:
+                    absenceFile.write(str("{}-{}-{}\n").format(
                         date[0], date[1], date[2]))
         return date
 
-    def shifts_month_decimal(self):
-        shifts_decimal = []
-        for decimal_day in range(self.first_day_decimal(), self.today_decimal() + 1):
-            fullday = self.first_day(decimal_day)
+    def shiftsMonthDecimal(self):
+        shiftsDecimal = []
+        for decimalDay in range(self.firstDayDecimal(), self.todayDecimal() + 1):
+            fullday = self.firstDay(decimalDay)
             if "Monday" in fullday or "Tuesday" in fullday or "Wednesday" in fullday or "Friday" in fullday or "Saturday" in fullday:
-                selected_shift = self.date_today.replace(
-                    month=self.month_number, day=decimal_day).strftime("%d %m %Y")
-                shifts_decimal.append(selected_shift)
-        return shifts_decimal
+                selectedShift = self.dateToday.replace(
+                    month=self.monthNumber, day=decimalDay).strftime("%d-%m-%Y")
+                shiftsDecimal.append(selectedShift)
+        return shiftsDecimal
 
-    def current_distance_delivery(self):
+    def currentDistanceDelivery(self):
         os.system("clear")
-        filename = "data.csv"
+        filename1 = "data.csv"
+        filename2 = "absence.csv"
+        if not os.path.isfile(filename1):
+            with open(filename1, "w") as dataFile:
+                dataFile.write("Date;Kilometer;Deliveries" + "\n")
 
-        if not os.path.isfile(filename):
-            with open(filename, "w") as data_file:
-                data_file.write("Date;Kilometer;Deliveries" + "\n")
+        with open(filename1, "r+") as dataFile, open(filename2, "r+") as absenceFile:
+            lines = dataFile.readlines()
+            lines2 = absenceFile.readlines()
+            entryFound = False
 
-        with open(filename, "r+") as data_file:
-            lines = data_file.readlines()
-            entry_found = False
-
-            for x in self.shifts_month_decimal():
-                entry_found = False
+            for x in self.shiftsMonthDecimal():
+                entryFound = False
                 for sentence in lines:
                     if x in sentence:
-                        print("The distance data for {} is already written".format(x))
-                        entry_found = True
+                        print("The data for {} is already written".format(x))
+                        entryFound = True
 
-                if entry_found == False:
-                    daily_distance = float(input(
+                for sentence in lines2:
+                    if x in sentence:
+                        print("You have not worked on {}".format(x))
+                        entryFound = True
+
+                if entryFound == False:
+                    dailyDistance = float(input(
                         "How much did you ride on {}: ".format(x)))
-                    daily_delivery = float(input(
+                    dailyDelivery = float(input(
                         "How many delivers did you had on {}: ".format(x)))
-                    with open(filename, "a+") as data_file:
-                        data_file.write(
-                            str("""{};{};{}""".format(x, round(daily_distance, 2), int(daily_delivery))) + "\n")
+                    with open(filename1, "a+") as dataFile:
+                        dataFile.write(
+                            str("""{};{};{}""".format(x, round(dailyDistance, 2), int(dailyDelivery))) + "\n")
 
-    def data_analysis(self):
+    def dataAnalysis(self):
         os.system("clear")
         filename = "data.csv"
-        date_data = []
-        kilometer_data = []
-        delivery_data = []
-        total_distance = 0
-        total_deliveries = 0
-        current_month = self.current_date.replace(
-            month=self.month_number).strftime("%B %Y")
+        dateData = []
+        kilometerData = []
+        deliveryData = []
+        totalDistance = 0
+        totalDeliveries = 0
+        currentMonth = self.currentDate.replace(
+            month=self.monthNumber).strftime("%B %Y")
 
-        with open(filename) as data_file:
-            for lines in islice(data_file, 1, None):
-                date_data.append(lines[0:10])
-                kilometer_data.append(lines[11:15])
-                delivery_data.append(lines[17:19])
-            data_file.close()
+        with open(filename) as dataFile:
+            for lines in islice(dataFile, 1, None):
+                dateData.append(lines[0:10])
+                kilometerData.append(lines[11:15])
+                deliveryData.append(lines[17:19])
+            dataFile.close()
 
-        for day in kilometer_data:
-            total_distance = total_distance + float(day)
-        for day in delivery_data:
-            total_deliveries = total_deliveries + float(day)
+        for day in kilometerData:
+            totalDistance = totalDistance + float(day)
+        for day in deliveryData:
+            totalDeliveries = totalDeliveries + float(day)
 
-        av_deliveries_day = total_deliveries / len(delivery_data)
-        av_deliveries_hour = av_deliveries_day / 5
-        av_distance = total_distance / len(kilometer_data)
+        avDeliveriesDay = totalDeliveries / len(deliveryData)
+        avDeliveriesHour = avDeliveriesDay / 5
+        avDistance = totalDistance / len(kilometerData)
 
         return """Your data for {}:\nTotal Distance: {}km\nDistance Average: {}km\nTotal Deliveries: {}
-Delivery Average(Day): {}\nDelivery Average(Hour): {}
-""".format(current_month, round(total_distance, 1), round(av_distance, 2), int(total_deliveries), round(av_deliveries_day, 2), round(av_deliveries_hour, 2))
+Delivery Average(Day): {}\nDelivery Average(Hour): {}""".format(currentMonth, round(totalDistance, 1), round(avDistance, 2),
+                                                                int(totalDeliveries), round(avDeliveriesDay, 2), round(avDeliveriesHour, 2))
 
-    def data_graph(self):
+    def dataGraph(self):
         date = []
         kilometer = []
         delivery = []
         filename = "data.csv"
-        first_line = True
-        with open(filename, "r+") as data_file:
-            lines = data_file.readlines()
+        firstLine = True
+
+        with open(filename, "r+") as dataFile:
+            lines = dataFile.readlines()
             for line in lines:
-                if first_line == True:
-                    first_line = False
+                if firstLine == True:
+                    firstLine = False
                     continue
 
                 splitArray = line.split(";")
+                dateLine = str(splitArray[0][:2])
+                kilometerLine = float(splitArray[1])
+                deliveryLine = float(splitArray[2].rstrip("\n"))
+                kilometer.append(kilometerLine)
+                date.append(dateLine)
+                delivery.append(deliveryLine)
 
-                date_line = str(splitArray[0][:2])
-                kilometer_line = float(splitArray[1])
-                delivery_line = float(splitArray[2].rstrip("\n"))
-                # if self.is_float_digit(kilometer_line, date_line, delivery_line):
-                kilometer.append(kilometer_line)
-                date.append(date_line)
-                delivery.append(delivery_line)
-                # else:
-                #    continue
         x = date
         y = delivery
         print(date)
@@ -159,7 +163,7 @@ Delivery Average(Day): {}\nDelivery Average(Hour): {}
         print(delivery)
 
         plt.bar(x, y,)
-        label = "Date for month: " + str(self.month_number)
+        label = "Date for month: " + str(self.monthNumber)
 
         plt.xlabel(label)
         plt.ylabel("Delivery")
@@ -178,4 +182,4 @@ Delivery Average(Day): {}\nDelivery Average(Hour): {}
 
 
 mjam = Month()
-print(mjam.data_graph())
+print(mjam.dataGraph())
