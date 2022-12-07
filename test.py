@@ -1,8 +1,9 @@
 from datetime import datetime as dt, date
 import calendar as cal
-from itertools import islice
 import os
 import matplotlib.pyplot as plt
+import smtplib
+from email.message import EmailMessage
 
 
 class Month:
@@ -137,9 +138,9 @@ class Month:
         avDeliveriesHour = avDeliveriesDay / 5
         avDistance = totalDistance / len(kilometerData)
 
-        return """Your data for {}:\nTotal Distance: {}km\nDistance Average: {}km\nTotal Deliveries: {}
-Delivery Average(Day): {}\nDelivery Average(Hour): {}""".format(currentMonth, round(totalDistance, 1), round(avDistance, 2),
-                                                                int(totalDeliveries), round(avDeliveriesDay, 2), round(avDeliveriesHour, 2))
+        return """Your data for {} is:\n\n\nTotal Distance: {}km\n\nDistance Average: {}km\n\nTotal Deliveries: {}\n
+Delivery Average(Day): {}\n\nDelivery Average(Hour): {}\n\n Nice job :)""".format(currentMonth, round(totalDistance, 1), round(avDistance, 2),
+                                                                                  int(totalDeliveries), round(avDeliveriesDay, 2), round(avDeliveriesHour, 2))
 
     def dataGraph(self):
         date = []
@@ -175,6 +176,24 @@ Delivery Average(Day): {}\nDelivery Average(Hour): {}""".format(currentMonth, ro
 
         return plt.show()
 
+    def emailData(self):
+        currentMonth = self.currentDate.replace(
+            month=self.monthNumber).strftime("%B %Y")
+        msg = EmailMessage()
+        msg.set_content(self.dataAnalysis())
+        password = input("Please type your password:")
+
+        msg['Subject'] = 'Mjam Work Data for {}'.format(currentMonth)
+        msg['From'] = "taylankurtyedek@gmail.com"
+        msg['To'] = "kurt.taylan@icloud.com"
+
+        # Send the message via our own SMTP server.
+        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        server.login("taylankurtyedek@gmail.com", password)
+        server.send_message(msg)
+        server.quit()
+        return "Message sent"
+
 
 mjam = Month()
-print(mjam.dataGraph())
+print(mjam.emailData())
