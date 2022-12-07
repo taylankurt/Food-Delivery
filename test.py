@@ -123,9 +123,10 @@ class Month:
                     continue
                 splitArray = line.split(";")
                 dateArray = splitArray[0].split("-")
-                dateData.append(dateArray[0:2])
-                kilometerData.append(splitArray[1])
-                deliveryData.append(splitArray[2])
+                if str(self.monthNumber) in dateArray[1]:
+                    dateData.append(dateArray[0:2])
+                    kilometerData.append(splitArray[1])
+                    deliveryData.append(splitArray[2])
 
         for day in kilometerData:
             totalDistance = totalDistance + float(day)
@@ -158,13 +159,14 @@ Delivery Average(Day): {}\nDelivery Average(Hour): {}""".format(currentMonth, ro
                 dateLine = str(splitArray[0][:2])
                 kilometerLine = float(splitArray[1])
                 deliveryLine = float(splitArray[2].rstrip("\n"))
-                kilometer.append(kilometerLine)
-                date.append(dateLine)
-                delivery.append(deliveryLine)
+                if str(self.monthNumber) in splitArray[0][3:5]:
+                    kilometer.append(kilometerLine)
+                    date.append(dateLine)
+                    delivery.append(deliveryLine)
 
         x = date
         y = delivery
-        plt.plot(x, y)
+        plt.bar(x, y)
         label = "Date for month: " + str(self.monthNumber)
 
         plt.xlabel(label)
