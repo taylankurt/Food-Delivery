@@ -4,6 +4,7 @@ import os
 import matplotlib.pyplot as plt
 import smtplib
 from email.message import EmailMessage
+import credentials
 
 
 class Month:
@@ -181,7 +182,7 @@ Delivery Average(Day): {}\n\nDelivery Average(Hour): {}\n\n Nice job :)""".forma
             month=self.monthNumber).strftime("%B %Y")
         msg = EmailMessage()
         msg.set_content(self.dataAnalysis())
-        password = input("Please type your password:")
+        password = credentials.appPasswordGmailYedek()
 
         msg['Subject'] = 'Mjam Work Data for {}'.format(currentMonth)
         msg['From'] = "taylankurtyedek@gmail.com"
