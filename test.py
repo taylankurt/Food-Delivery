@@ -75,9 +75,10 @@ class Month:
         os.system("clear")
         filename1 = "data.csv"
         filename2 = "absence.csv"
+
         if not os.path.isfile(filename1):
             with open(filename1, "w") as dataFile:
-                dataFile.write("Date;Kilometer;Deliveries" + "\n")
+                dataFile.write("Date;Kilometer;Deliveries;Tipp" + "\n")
 
         with open(filename1, "r+") as dataFile, open(filename2, "r+") as absenceFile:
             lines = dataFile.readlines()
@@ -101,9 +102,12 @@ class Month:
                         "How much did you ride on {}: ".format(x)))
                     dailyDelivery = float(input(
                         "How many delivers did you had on {}: ".format(x)))
+                    dailyTipp = float(
+                        input("How much Tipp did you had on {}:".format(x)))
                     with open(filename1, "a+") as dataFile:
                         dataFile.write(
-                            str("""{};{};{}""".format(x, round(dailyDistance, 2), int(dailyDelivery))) + "\n")
+                            str("""{};{};{};{}""".format(x, round(dailyDistance, 2), int(dailyDelivery), (dailyTipp))) + "\n")
+        return ""
 
     def dataAnalysis(self):
         os.system("clear")
@@ -111,8 +115,10 @@ class Month:
         dateData = []
         kilometerData = []
         deliveryData = []
+        TippData = []
         totalDistance = 0
         totalDeliveries = 0
+        totalTipp = 0
         currentMonth = self.currentDate.replace(
             month=self.monthNumber).strftime("%B %Y")
         firstLine = True
@@ -129,19 +135,24 @@ class Month:
                     dateData.append(dateArray[0:2])
                     kilometerData.append(splitArray[1])
                     deliveryData.append(splitArray[2])
+                    TippData.append(splitArray[3])
 
         for day in kilometerData:
             totalDistance = totalDistance + float(day)
         for day in deliveryData:
             totalDeliveries = totalDeliveries + float(day)
+        for day in TippData:
+            totalTipp = totalTipp + float(day)
 
         avDeliveriesDay = totalDeliveries / len(deliveryData)
         avDeliveriesHour = avDeliveriesDay / 5
         avDistance = totalDistance / len(kilometerData)
+        avTipp = totalTipp / len(TippData)
 
-        return """Your data for {} is:\n\n\nTotal Distance: {}km\n\nDistance Average: {}km\n\nTotal Deliveries: {}\n
-Delivery Average(Day): {}\n\nDelivery Average(Hour): {}\n\n Nice job :)""".format(currentMonth, round(totalDistance, 1), round(avDistance, 2),
-                                                                                  int(totalDeliveries), round(avDeliveriesDay, 2), round(avDeliveriesHour, 2))
+        return f"""Your data for {currentMonth} is:\n\n\nTotal Distance: {round(totalDistance, 1)}km\n
+Distance Average: {round(avDistance, 2)}km\n\nTotal Deliveries: {int(totalDeliveries)}\n
+Delivery Average(Day): {round(avDeliveriesDay, 2)}\n\nDelivery Average(Hour): {round(avDeliveriesHour, 2)}\n
+Total Tipp: {totalTipp} €\n\nTipp Average: {avTipp} €\n\nNice job :)"""
 
     def dataGraph(self):
         date = []
@@ -197,4 +208,4 @@ Delivery Average(Day): {}\n\nDelivery Average(Hour): {}\n\n Nice job :)""".forma
 
 
 mjam = Month()
-print(mjam.emailData())
+print(mjam.dataAnalysis())
