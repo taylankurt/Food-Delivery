@@ -152,7 +152,7 @@ class Month:
         return f"""Your data for {currentMonth} is:\n\n\nTotal Distance: {round(totalDistance, 1)}km\n
 Distance Average: {round(avDistance, 2)}km\n\nTotal Deliveries: {int(totalDeliveries)}\n
 Delivery Average(Day): {round(avDeliveriesDay, 2)}\n\nDelivery Average(Hour): {round(avDeliveriesHour, 2)}\n
-Total Tipp: {totalTipp} €\n\nTipp Average: {avTipp} €\n\nNice job :)"""
+Total Tipp: {totalTipp} €\n\nTipp Average: {round(avTipp, 2)} €\n\nNice job :)"""
 
     def dataGraph(self):
         date = []
@@ -208,4 +208,4 @@ Total Tipp: {totalTipp} €\n\nTipp Average: {avTipp} €\n\nNice job :)"""
 
 
 mjam = Month()
-print(mjam.dataAnalysis())
+print(mjam.emailData())

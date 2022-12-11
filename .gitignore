@@ -5,7 +5,4 @@ experiment.py
 distance_delivery_data.txt
 data.csv
 absence.csv
-credentials.json
 credentials.py
-quickstart.py
-token.json
