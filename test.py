@@ -103,7 +103,7 @@ class Month:
                     dailyDelivery = float(input(
                         "How many delivers did you had on {}: ".format(x)))
                     dailyTipp = float(
-                        input("How much Tipp did you had on {}:".format(x)))
+                        input("How much Tipp did you had on {}: ".format(x)))
                     with open(filename1, "a+") as dataFile:
                         dataFile.write(
                             str("""{};{};{};{}""".format(x, round(dailyDistance, 2), int(dailyDelivery), (dailyTipp))) + "\n")
@@ -208,4 +208,4 @@ Total Tipp: {totalTipp} €\n\nTipp Average: {round(avTipp, 2)} €\n\nNice job 
 
 
 mjam = Month()
-print(mjam.emailData())
+print(mjam.dataAnalysis())
