@@ -7,7 +7,7 @@ from email.message import EmailMessage
 import credentials
 
 
-class Month:
+class Mjam:
     def __init__(self):
         self.monthNumber = int(input(
             "Please enter the month in number(1-12): "))
@@ -207,5 +207,5 @@ Total Tipp: {totalTipp} €\n\nTipp Average: {round(avTipp, 2)} €\n\nNice job 
         return "Message sent"
 
 
-mjam = Month()
-print(mjam.dataAnalysis())
+Taylan = Mjam()
+print(Taylan.dataAnalysis())
