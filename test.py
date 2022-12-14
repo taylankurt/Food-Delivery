@@ -45,27 +45,32 @@ class Mjam:
         os.system("clear")
         filename = "absence.csv"
         absenceDay = True
+        path = "C:/Users/tayla/Desktop/Code/projects/mjam/user_data/absence.csv"
 
-        if not os.path.isfile(filename):
-            with open(filename, "w") as dataFile:
+        if not os.path.isfile(path):
+            with open(path, "w") as dataFile:
                 dataFile.write("Date" + "\n")
 
         while absenceDay:
+            os.system("clear")
+            print("""To exit press "e" """)
             line = input("Absence date: ").split(' ')
             date = []
             for x in line:
                 if x.isdigit():
                     date.append(x)
-                else:
+                elif x == "e":
                     absenceDay = False
+                    print("Exiting")
                     break
             if absenceDay == True:
-                with open(filename, "a+") as absenceFile:
+                with open(path, "a+") as absenceFile:
                     absenceFile.write(str("{}-{}-{}\n").format(
                         date[0], date[1], date[2]))
-        return date
+        return ""
 
     def shiftsMonthDecimal(self, month=currentDate.month):
+        os.system("clear")
         shiftsDecimal = []
         if month == self.currentDate.month:
             for decimalDay in range(self.firstDayDecimal(month), self.todayDecimal(month) + 1):
@@ -88,8 +93,9 @@ class Mjam:
         os.system("clear")
         filename1 = "data.csv"
         filename2 = "absence.csv"
+        path = "C:/Users/tayla/Desktop/Code/projects/mjam/user_data/"
 
-        if not os.path.isfile(filename1):
+        if not os.path.isfile(path):
             with open(filename1, "w") as dataFile:
                 dataFile.write("Date;Kilometer;Deliveries;Tipp" + "\n")
 
@@ -126,8 +132,9 @@ class Mjam:
         os.system("clear")
         filename1 = "data.csv"
         filename2 = "absence.csv"
+        path = "C:/Users/tayla/Desktop/Code/projects/mjam/user_data/"
 
-        if not os.path.isfile(filename1):
+        if not os.path.isfile(path):
             with open(filename1, "w") as dataFile:
                 dataFile.write("Date;Kilometer;Deliveries;Tipp" + "\n")
 
@@ -162,6 +169,7 @@ class Mjam:
     def dataAnalysis(self):
         os.system("clear")
         filename = "data.csv"
+        path = "C:/Users/tayla/Desktop/Code/projects/mjam/user_data/data.csv"
         dateData = []
         kilometerData = []
         deliveryData = []
@@ -173,7 +181,7 @@ class Mjam:
             month=self.month).strftime("%B %Y")
         firstLine = True
 
-        with open(filename) as dataFile:
+        with open(path) as dataFile:
             lines = dataFile.readlines()
             for line in lines:
                 if firstLine == True:
@@ -211,9 +219,11 @@ Total Tipp: {totalTipp} €\n\nTipp Average: {round(avTipp, 2)} €\n\nNice job 
         kilometer = []
         delivery = []
         filename = "data.csv"
+        path = "C:/Users/tayla/Desktop/Code/projects/mjam/user_data/data.csv"
+
         firstLine = True
 
-        with open(filename, "r+") as dataFile:
+        with open(path, "r+") as dataFile:
             lines = dataFile.readlines()
             for line in lines:
                 if firstLine == True:
@@ -262,4 +272,4 @@ Total Tipp: {totalTipp} €\n\nTipp Average: {round(avTipp, 2)} €\n\nNice job 
 
 Taylan = Mjam()
 
-print(Taylan.dataAnalysis())
+print(Taylan.absenceMonth())

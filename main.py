@@ -262,4 +262,4 @@ Total Tipp: {totalTipp} €\n\nTipp Average: {round(avTipp, 2)} €\n\nNice job 
 
 Taylan = Mjam()
 
-print(Taylan.dataAnalysis())
+print(Taylan.shiftsMonthDecimal())
