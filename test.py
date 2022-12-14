@@ -4,32 +4,36 @@ import os
 import matplotlib.pyplot as plt
 import smtplib
 from email.message import EmailMessage
-import credentials
+from credentials import gmailAppPassword
 
 
 class Mjam:
+
+    currentDate = date.today()
+
     def __init__(self):
-        self.monthNumber = int(input(
-            "Please enter the month in number(1-12): "))
         self.dateToday = dt.now()
         self.currentDate = date.today()
+        self.monthNumber = self.currentDate.month
+        self.month = int(input("Please enter the month in number(1-12): "))
 
-    def todayDecimal(self):
-        return int(self.dateToday.strftime("%d"))
+    def todayDecimal(self, month=currentDate.month):
+        return int(self.dateToday.replace(month=month).strftime("%d"))
 
-    def firstDayDecimal(self):
-        firstDay = self.dateToday.replace(month=self.monthNumber, day=1)
+    def firstDayDecimal(self, month=currentDate.month):
+        firstDay = self.dateToday.replace(month=month, day=1)
         return firstDay.day
 
-    def firstDay(self, day):
+    def firstDay(self, day, month=currentDate.month):
         self.day = day
         firstDay = self.dateToday.replace(
-            month=self.monthNumber, day=day).strftime("""%A %d, %B %Y""")
+            month=month, day=day).strftime("""%A %d, %B %Y""")
         return firstDay
 
-    def lastDayDecimal(self):  # to determine the last day of the month
+    # to determine the last day of the month
+    def lastDayDecimal(self, month=currentDate):
         currentMonthArray = cal.monthcalendar(
-            year=self.currentDate.year, month=self.monthNumber)
+            year=self.currentDate.year, month=month)
         largestNumber = 0
         for entry in currentMonthArray:
             for x in entry:
@@ -61,17 +65,26 @@ class Mjam:
                         date[0], date[1], date[2]))
         return date
 
-    def shiftsMonthDecimal(self):
+    def shiftsMonthDecimal(self, month=currentDate.month):
         shiftsDecimal = []
-        for decimalDay in range(self.firstDayDecimal(), self.todayDecimal() + 1):
-            fullday = self.firstDay(decimalDay)
-            if "Monday" in fullday or "Tuesday" in fullday or "Wednesday" in fullday or "Friday" in fullday or "Saturday" in fullday:
-                selectedShift = self.dateToday.replace(
-                    month=self.monthNumber, day=decimalDay).strftime("%d-%m-%Y")
-                shiftsDecimal.append(selectedShift)
+        if month == self.currentDate.month:
+            for decimalDay in range(self.firstDayDecimal(month), self.todayDecimal(month) + 1):
+                fullday = self.firstDay(decimalDay, month)
+                if "Monday" in fullday or "Tuesday" in fullday or "Wednesday" in fullday or "Friday" in fullday or "Saturday" in fullday:
+                    selectedShift = self.dateToday.replace(
+                        month=month, day=decimalDay).strftime("%d-%m-%Y")
+                    shiftsDecimal.append(selectedShift)
+        else:
+            for decimalDay in range(self.firstDayDecimal(month), self.lastDayDecimal(month) + 1):
+                fullday = self.firstDay(decimalDay, month)
+                if "Monday" in fullday or "Tuesday" in fullday or "Wednesday" in fullday or "Friday" in fullday or "Saturday" in fullday:
+                    selectedShift = self.dateToday.replace(
+                        month=month, day=decimalDay).strftime("%d-%m-%Y")
+                    shiftsDecimal.append(selectedShift)
+
         return shiftsDecimal
 
-    def currentDistanceDelivery(self):
+    def writeCurrentMonth(self):
         os.system("clear")
         filename1 = "data.csv"
         filename2 = "absence.csv"
@@ -109,6 +122,43 @@ class Mjam:
                             str("""{};{};{};{}""".format(x, round(dailyDistance, 2), int(dailyDelivery), (dailyTipp))) + "\n")
         return ""
 
+    def writeGivenMonth(self):
+        os.system("clear")
+        filename1 = "data.csv"
+        filename2 = "absence.csv"
+
+        if not os.path.isfile(filename1):
+            with open(filename1, "w") as dataFile:
+                dataFile.write("Date;Kilometer;Deliveries;Tipp" + "\n")
+
+        with open(filename1, "r+") as dataFile, open(filename2, "r+") as absenceFile:
+            lines = dataFile.readlines()
+            lines2 = absenceFile.readlines()
+            entryFound = False
+            for x in self.shiftsMonthDecimal(month=self.month):
+                entryFound = False
+                for sentence in lines:
+                    if x in sentence:
+                        print("The data for {} is already written".format(x))
+                        entryFound = True
+
+                for sentence in lines2:
+                    if x in sentence:
+                        print("You have not worked on {}".format(x))
+                        entryFound = True
+
+                if entryFound == False:
+                    dailyDistance = float(input(
+                        "How much did you ride on {}: ".format(x)))
+                    dailyDelivery = float(input(
+                        "How many delivers did you had on {}: ".format(x)))
+                    dailyTipp = float(
+                        input("How much Tipp did you had on {}: ".format(x)))
+                    with open(filename1, "a+") as dataFile:
+                        dataFile.write(
+                            str("""{};{};{};{}""".format(x, round(dailyDistance, 2), int(dailyDelivery), (dailyTipp))) + "\n")
+        return ""
+
     def dataAnalysis(self):
         os.system("clear")
         filename = "data.csv"
@@ -120,7 +170,7 @@ class Mjam:
         totalDeliveries = 0
         totalTipp = 0
         currentMonth = self.currentDate.replace(
-            month=self.monthNumber).strftime("%B %Y")
+            month=self.month).strftime("%B %Y")
         firstLine = True
 
         with open(filename) as dataFile:
@@ -131,7 +181,7 @@ class Mjam:
                     continue
                 splitArray = line.split(";")
                 dateArray = splitArray[0].split("-")
-                if str(self.monthNumber) in dateArray[1]:
+                if str(self.month) in dateArray[1]:
                     dateData.append(dateArray[0:2])
                     kilometerData.append(splitArray[1])
                     deliveryData.append(splitArray[2])
@@ -148,13 +198,15 @@ class Mjam:
         avDeliveriesHour = avDeliveriesDay / 5
         avDistance = totalDistance / len(kilometerData)
         avTipp = totalTipp / len(TippData)
+        workedDays = len(dateData)
 
-        return f"""Your data for {currentMonth} is:\n\n\nTotal Distance: {round(totalDistance, 1)}km\n
+        return f"""Your data for {currentMonth} is:\n\n\nWorked Days:{workedDays}\n\nTotal Distance: {round(totalDistance, 1)}km\n
 Distance Average: {round(avDistance, 2)}km\n\nTotal Deliveries: {int(totalDeliveries)}\n
 Delivery Average(Day): {round(avDeliveriesDay, 2)}\n\nDelivery Average(Hour): {round(avDeliveriesHour, 2)}\n
 Total Tipp: {totalTipp} €\n\nTipp Average: {round(avTipp, 2)} €\n\nNice job :)"""
 
     def dataGraph(self):
+        os.system("clear")
         date = []
         kilometer = []
         delivery = []
@@ -172,7 +224,7 @@ Total Tipp: {totalTipp} €\n\nTipp Average: {round(avTipp, 2)} €\n\nNice job 
                 dateLine = str(splitArray[0][:2])
                 kilometerLine = float(splitArray[1])
                 deliveryLine = float(splitArray[2].rstrip("\n"))
-                if str(self.monthNumber) in splitArray[0][3:5]:
+                if str(self.month) in splitArray[0][3:5]:
                     kilometer.append(kilometerLine)
                     date.append(dateLine)
                     delivery.append(deliveryLine)
@@ -189,11 +241,12 @@ Total Tipp: {totalTipp} €\n\nTipp Average: {round(avTipp, 2)} €\n\nNice job 
         return plt.show()
 
     def emailData(self):
+        os.system("clear")
         currentMonth = self.currentDate.replace(
-            month=self.monthNumber).strftime("%B %Y")
+            month=self.month).strftime("%B %Y")
         msg = EmailMessage()
         msg.set_content(self.dataAnalysis())
-        password = credentials.appPasswordGmailYedek()
+        password = gmailAppPassword
 
         msg['Subject'] = 'Mjam Work Data for {}'.format(currentMonth)
         msg['From'] = "taylankurtyedek@gmail.com"
@@ -208,4 +261,5 @@ Total Tipp: {totalTipp} €\n\nTipp Average: {round(avTipp, 2)} €\n\nNice job 
 
 
 Taylan = Mjam()
+
 print(Taylan.dataAnalysis())
