@@ -4,7 +4,7 @@ import os
 import matplotlib.pyplot as plt
 import smtplib
 from email.message import EmailMessage
-from credentials import gmailAppPassword
+from credentials import appPasswordGmailYedek
 
 
 class Mjam:
@@ -246,7 +246,7 @@ Total Tipp: {totalTipp} €\n\nTipp Average: {round(avTipp, 2)} €\n\nNice job 
             month=self.month).strftime("%B %Y")
         msg = EmailMessage()
         msg.set_content(self.dataAnalysis())
-        password = gmailAppPassword
+        password = appPasswordGmailYedek
 
         msg['Subject'] = 'Mjam Work Data for {}'.format(currentMonth)
         msg['From'] = "taylankurtyedek@gmail.com"

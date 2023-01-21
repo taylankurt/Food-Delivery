@@ -4,7 +4,7 @@ import os
 import matplotlib.pyplot as plt
 import smtplib
 from email.message import EmailMessage
-from credentials import gmailAppPassword
+from credentials import appPasswordGmailYedek
 
 
 class Mjam:
@@ -15,25 +15,28 @@ class Mjam:
         self.dateToday = dt.now()
         self.currentDate = date.today()
         self.monthNumber = self.currentDate.month
-        self.month = int(input("Please enter the month in number(1-12): "))
+        self.selectedMonth = int(
+            input("Please enter the month in number(1-12): "))
+        self.selectedYear = int(
+            input("Please enter the year in full year(e.g.: 2022): "))
 
     def todayDecimal(self, month=currentDate.month):
         return int(self.dateToday.replace(month=month).strftime("%d"))
 
-    def firstDayDecimal(self, month=currentDate.month):
-        firstDay = self.dateToday.replace(month=month, day=1)
+    def firstDayDecimal(self, month=currentDate.month, year=currentDate.year):
+        firstDay = self.dateToday.replace(year=year, month=month, day=1)
         return firstDay.day
 
-    def firstDay(self, day, month=currentDate.month):
+    def firstDay(self, day, month=currentDate.month, year=currentDate.year):
         self.day = day
         firstDay = self.dateToday.replace(
-            month=month, day=day).strftime("""%A %d, %B %Y""")
+            year=year, month=month, day=day).strftime("""%A %d, %B %Y""")
         return firstDay
 
     # to determine the last day of the month
-    def lastDayDecimal(self, month=currentDate):
+    def lastDayDecimal(self, month=currentDate, year=currentDate.year):
         currentMonthArray = cal.monthcalendar(
-            year=self.currentDate.year, month=month)
+            year=year, month=month)
         largestNumber = 0
         for entry in currentMonthArray:
             for x in entry:
@@ -43,9 +46,8 @@ class Mjam:
 
     def absenceMonth(self):
         os.system("clear")
-        filename = "absence.csv"
         absenceDay = True
-        path = "C:/Users/tayla/Desktop/Code/projects/mjam/user_data/absence.csv"
+        path = "C:/Users/tayla/iCloudDrive/Documents/Arbeit/UserDaten/absence.csv"
 
         if not os.path.isfile(path):
             with open(path, "w") as dataFile:
@@ -54,7 +56,7 @@ class Mjam:
         while absenceDay:
             os.system("clear")
             print("""To exit press "e" """)
-            line = input("Absence date: ").split(' ')
+            line = input("Absence date(e.g. 01 01 2023): ").split(' ')
             date = []
             for x in line:
                 if x.isdigit():
@@ -69,31 +71,31 @@ class Mjam:
                         date[0], date[1], date[2]))
         return ""
 
-    def shiftsMonthDecimal(self, month=currentDate.month):
+    def shiftsMonthDecimal(self, month=currentDate.month, year=currentDate.year):
         os.system("clear")
         shiftsDecimal = []
-        if month == self.currentDate.month:
-            for decimalDay in range(self.firstDayDecimal(month), self.todayDecimal(month) + 1):
-                fullday = self.firstDay(decimalDay, month)
+        if month == self.currentDate.month and year == self.currentDate.year:
+            for decimalDay in range(self.firstDayDecimal(month, year), self.todayDecimal(month) + 1):
+                fullday = self.firstDay(decimalDay, month, year)
                 if "Monday" in fullday or "Tuesday" in fullday or "Wednesday" in fullday or "Friday" in fullday or "Saturday" in fullday:
                     selectedShift = self.dateToday.replace(
-                        month=month, day=decimalDay).strftime("%d-%m-%Y")
+                        year=year, month=month, day=decimalDay).strftime("%d-%m-%Y")
                     shiftsDecimal.append(selectedShift)
         else:
-            for decimalDay in range(self.firstDayDecimal(month), self.lastDayDecimal(month) + 1):
-                fullday = self.firstDay(decimalDay, month)
+            for decimalDay in range(self.firstDayDecimal(month, year), self.lastDayDecimal(month, year) + 1):
+                fullday = self.firstDay(decimalDay, month, year)
                 if "Monday" in fullday or "Tuesday" in fullday or "Wednesday" in fullday or "Friday" in fullday or "Saturday" in fullday:
                     selectedShift = self.dateToday.replace(
-                        month=month, day=decimalDay).strftime("%d-%m-%Y")
+                        year=year, month=month, day=decimalDay).strftime("%d-%m-%Y")
                     shiftsDecimal.append(selectedShift)
 
         return shiftsDecimal
 
     def writeCurrentMonth(self):
         os.system("clear")
-        filename1 = "data.csv"
-        filename2 = "absence.csv"
-        path = "C:/Users/tayla/Desktop/Code/projects/mjam/user_data/"
+        filename1 = "C:/Users/tayla/iCloudDrive/Documents/Arbeit/UserDaten/data.csv"
+        filename2 = "C:/Users/tayla/iCloudDrive/Documents/Arbeit/UserDaten/absence.csv"
+        path = "C:/Users/tayla/iCloudDrive/Documents/Arbeit/UserDaten/data.csv"
 
         if not os.path.isfile(path):
             with open(filename1, "w") as dataFile:
@@ -130,9 +132,9 @@ class Mjam:
 
     def writeGivenMonth(self):
         os.system("clear")
-        filename1 = "data.csv"
-        filename2 = "absence.csv"
-        path = "C:/Users/tayla/Desktop/Code/projects/mjam/user_data/"
+        filename1 = "C:/Users/tayla/iCloudDrive/Documents/Arbeit/UserDaten/data.csv"
+        filename2 = "C:/Users/tayla/iCloudDrive/Documents/Arbeit/UserDaten/absence.csv"
+        path = "C:/Users/tayla/iCloudDrive/Documents/Arbeit/UserDaten/data.csv"
 
         if not os.path.isfile(path):
             with open(filename1, "w") as dataFile:
@@ -142,7 +144,7 @@ class Mjam:
             lines = dataFile.readlines()
             lines2 = absenceFile.readlines()
             entryFound = False
-            for x in self.shiftsMonthDecimal(month=self.month):
+            for x in self.shiftsMonthDecimal(month=self.selectedMonth, year=self.selectedYear):
                 entryFound = False
                 for sentence in lines:
                     if x in sentence:
@@ -167,9 +169,8 @@ class Mjam:
         return ""
 
     def dataAnalysis(self):
-        os.system("clear")
-        filename = "data.csv"
-        path = "C:/Users/tayla/Desktop/Code/projects/mjam/user_data/data.csv"
+        os.system('cls')
+        path = "C:/Users/tayla/iCloudDrive/Documents/Arbeit/UserDaten/data.csv"
         dateData = []
         kilometerData = []
         deliveryData = []
@@ -178,7 +179,7 @@ class Mjam:
         totalDeliveries = 0
         totalTipp = 0
         currentMonth = self.currentDate.replace(
-            month=self.month).strftime("%B %Y")
+            year=self.selectedYear, month=self.selectedMonth).strftime("%B %Y")
         firstLine = True
 
         with open(path) as dataFile:
@@ -189,7 +190,7 @@ class Mjam:
                     continue
                 splitArray = line.split(";")
                 dateArray = splitArray[0].split("-")
-                if str(self.month) in dateArray[1]:
+                if str(self.selectedMonth) in dateArray[1] and str(self.selectedYear) in dateArray[2]:
                     dateData.append(dateArray[0:2])
                     kilometerData.append(splitArray[1])
                     deliveryData.append(splitArray[2])
@@ -214,12 +215,11 @@ Delivery Average(Day): {round(avDeliveriesDay, 2)}\n\nDelivery Average(Hour): {r
 Total Tipp: {totalTipp} €\n\nTipp Average: {round(avTipp, 2)} €\n\nNice job :)"""
 
     def dataGraph(self):
-        os.system("clear")
+        os.system("cls")
         date = []
         kilometer = []
         delivery = []
-        filename = "data.csv"
-        path = "C:/Users/tayla/Desktop/Code/projects/mjam/user_data/data.csv"
+        path = "C:/Users/tayla/iCloudDrive/Documents/Arbeit/UserDaten/data.csv"
 
         firstLine = True
 
@@ -234,7 +234,7 @@ Total Tipp: {totalTipp} €\n\nTipp Average: {round(avTipp, 2)} €\n\nNice job 
                 dateLine = str(splitArray[0][:2])
                 kilometerLine = float(splitArray[1])
                 deliveryLine = float(splitArray[2].rstrip("\n"))
-                if str(self.month) in splitArray[0][3:5]:
+                if str(self.selectedMonth) in splitArray[0][3:5] and str(self.selectedYear) in splitArray[0][6:10]:
                     kilometer.append(kilometerLine)
                     date.append(dateLine)
                     delivery.append(deliveryLine)
@@ -242,7 +242,8 @@ Total Tipp: {totalTipp} €\n\nTipp Average: {round(avTipp, 2)} €\n\nNice job 
         x = date
         y = delivery
         plt.bar(x, y)
-        label = "Date for month: " + str(self.monthNumber)
+        label = "Month: " + self.currentDate.replace(
+            month=self.selectedMonth).strftime("%B")
 
         plt.xlabel(label)
         plt.ylabel("Delivery")
@@ -253,12 +254,12 @@ Total Tipp: {totalTipp} €\n\nTipp Average: {round(avTipp, 2)} €\n\nNice job 
     def emailData(self):
         os.system("clear")
         currentMonth = self.currentDate.replace(
-            month=self.month).strftime("%B %Y")
+            year=self.selectedYear, month=self.selectedMonth).strftime("%B %Y")
         msg = EmailMessage()
         msg.set_content(self.dataAnalysis())
-        password = gmailAppPassword
+        password = appPasswordGmailYedek
 
-        msg['Subject'] = 'Mjam Work Data for {}'.format(currentMonth)
+        msg['Subject'] = "Mjam Work Data for {}".format(currentMonth)
         msg['From'] = "taylankurtyedek@gmail.com"
         msg['To'] = "kurt.taylan@icloud.com"
 
@@ -272,4 +273,4 @@ Total Tipp: {totalTipp} €\n\nTipp Average: {round(avTipp, 2)} €\n\nNice job 
 
 Taylan = Mjam()
 
-print(Taylan.absenceMonth())
+print(Taylan.dataAnalysis())
